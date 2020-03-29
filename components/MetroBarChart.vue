@@ -49,7 +49,8 @@ import { TranslateResult } from 'vue-i18n'
 import { ChartOptions, ChartData } from 'chart.js'
 import { ThisTypedComponentOptionsWithRecordProps } from 'vue/types/options'
 import DataView from '@/components/DataView.vue'
-import { triple as colors } from '@/utils/colors'
+import { getGraphSeries } from '@/utils/colors'
+import { patternFactory } from '@/utils/patterns'
 
 interface HTMLElementEvent<T extends HTMLElement> extends Event {
   currentTarget: T
@@ -65,8 +66,9 @@ type Computed = {
     datasets: {
       label: string
       data: number[]
-      backgroundColor: string
-      borderWidth: number
+      backgroundColor: string | CanvasPattern
+      borderColor: string
+      borderWidth: object
     }[]
   }
   tableHeaders: {
@@ -161,12 +163,14 @@ const options: ThisTypedComponentOptionsWithRecordProps<
   }),
   computed: {
     displayData() {
+      const graphSeries = getGraphSeries(this.chartData.labels!.length)
       const datasets = this.chartData.labels!.map((label, i) => {
         return {
           label: label as string,
           data: this.chartData.datasets!.map(d => d.data![i]) as number[],
-          backgroundColor: colors[i],
-          borderWidth: 0
+          backgroundColor: patternFactory(graphSeries[i]),
+          borderColor: graphSeries[i].strokeColor,
+          borderWidth: { left: 1, top: 1, right: 1, bottom: 1 }
         }
       })
       return {

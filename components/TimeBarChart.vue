@@ -57,7 +57,8 @@ import DataSelector from '@/components/DataSelector.vue'
 import DataViewBasicInfoPanel from '@/components/DataViewBasicInfoPanel.vue'
 import OpenDataLink from '@/components/OpenDataLink.vue'
 
-import { single as color } from '@/utils/colors'
+import { graphSeriesSingle } from '@/utils/colors'
+import { patternFactory } from '@/utils/patterns'
 
 type Data = {
   dataKind: 'transition' | 'cumulative'
@@ -79,8 +80,9 @@ type Computed = {
     datasets: {
       label: 'transition' | 'cumulative'
       data: number[]
-      backgroundColor: string
-      borderWidth: number
+      backgroundColor: string | CanvasPattern
+      borderColor: string
+      borderWidth: object
     }[]
   }
   displayOption: {
@@ -207,8 +209,9 @@ const options: ThisTypedComponentOptionsWithRecordProps<
               data: this.chartData.map(d => {
                 return d.transition
               }),
-              backgroundColor: color,
-              borderWidth: 0
+              backgroundColor: patternFactory(graphSeriesSingle[0]),
+              borderColor: graphSeriesSingle[0].strokeColor,
+              borderWidth: { left: 1, top: 1, right: 1, bottom: 1 }
             }
           ]
         }
@@ -221,8 +224,9 @@ const options: ThisTypedComponentOptionsWithRecordProps<
             data: this.chartData.map(d => {
               return d.cumulative
             }),
-            backgroundColor: color,
-            borderWidth: 0
+            backgroundColor: patternFactory(graphSeriesSingle[0]),
+            borderColor: graphSeriesSingle[0].strokeColor,
+            borderWidth: { left: 1, top: 1, right: 1, bottom: 1 }
           }
         ]
       }

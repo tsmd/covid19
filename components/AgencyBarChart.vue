@@ -50,7 +50,8 @@ import { ChartOptions } from 'chart.js'
 import { ThisTypedComponentOptionsWithRecordProps } from 'vue/types/options'
 import agencyData from '@/data/agency.json'
 import DataView from '@/components/DataView.vue'
-import { triple as colors } from '@/utils/colors'
+import { getGraphSeries } from '@/utils/colors'
+import { patternFactory } from '@/utils/patterns'
 
 interface HTMLElementEvent<T extends HTMLElement> extends MouseEvent {
   currentTarget: T
@@ -68,7 +69,7 @@ type Computed = {
     datasets: {
       label: string
       data: number[]
-      backgroundColor: string
+      backgroundColor: string | CanvasPattern
       borderColor: string
       borderWidth: object
     }[]
@@ -140,21 +141,16 @@ const options: ThisTypedComponentOptionsWithRecordProps<
   },
   computed: {
     displayData() {
-      const borderColor = '#ffffff'
-      const borderWidth = [
-        { left: 0, top: 1, right: 0, bottom: 0 },
-        { left: 0, top: 1, right: 0, bottom: 0 },
-        { left: 0, top: 0, right: 0, bottom: 0 }
-      ]
+      const graphSeries = getGraphSeries(this.chartData.datasets.length)
       return {
         labels: this.chartData.labels as string[],
         datasets: this.chartData.datasets.map((item, index) => {
           return {
             label: this.agencies[index] as string,
             data: item.data,
-            backgroundColor: colors[index] as string,
-            borderColor,
-            borderWidth: borderWidth[index]
+            backgroundColor: patternFactory(graphSeries[index]),
+            borderColor: graphSeries[index].strokeColor,
+            borderWidth: { left: 1, top: 1, right: 1, bottom: 1 }
           }
         })
       }

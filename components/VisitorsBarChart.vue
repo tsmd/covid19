@@ -67,8 +67,9 @@ import weekOfYear from 'dayjs/plugin/weekOfYear'
 import updateLocale from 'dayjs/plugin/updateLocale'
 import minMax from 'dayjs/plugin/minMax'
 import DataView from '@/components/DataView.vue'
-import { single as color } from '@/utils/colors'
+import { graphSeriesSingle } from '@/utils/colors'
 import SourceLink from '@/components/SourceLink.vue'
+import { patternFactory } from '@/utils/patterns'
 
 dayjs.extend(updateLocale)
 dayjs.extend(weekOfYear)
@@ -110,7 +111,9 @@ type Computed = {
     labels: string[]
     datasets: {
       data: number[]
-      backgroundColor: string
+      backgroundColor: string | CanvasPattern
+      borderColor: string
+      borderWidth: object
     }[]
   }
   displayOptions: {
@@ -277,7 +280,9 @@ const options: ThisTypedComponentOptionsWithRecordProps<
         datasets: [
           {
             data: percentages,
-            backgroundColor: color
+            backgroundColor: patternFactory(graphSeriesSingle[0]),
+            borderColor: graphSeriesSingle[0].strokeColor,
+            borderWidth: { left: 1, top: 1, right: 1, bottom: 1 }
           }
         ]
       }
